@@ -11,8 +11,8 @@ android {
         applicationId = "com.asdevelopers.academy.javascript"
         minSdk = 23
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
     }
 
     buildFeatures { compose = true }
@@ -22,8 +22,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    // Loader مرکزی مسیر course/javascript را انتظار دارد؛ ریشه assets باید پوشه والد course باشد.
-    sourceSets.getByName("main").assets.srcDir("..")
+    // فقط Course Package آموزشی وارد APK می‌شود؛ ریشه پروژه و خروجی Gradle هرگز asset نیستند.
+    sourceSets.getByName("main").assets.srcDir("src/main/assets")
+}
+
+// Course Package مستقل از کد اپ نگهداری می‌شود. قبل از Build فقط محتوای course/javascript
+// به ساختار استاندارد assets/course/javascript کپی می‌شود تا Loader مشترک Core آن را بخواند.
+val syncJavaScriptCourseAssets by tasks.registering(Copy::class) {
+    from(rootProject.file("course/javascript"))
+    into(layout.projectDirectory.dir("src/main/assets/course/javascript"))
+}
+
+tasks.configureEach {
+    if (name.startsWith("merge") && name.endsWith("Assets")) {
+        dependsOn(syncJavaScriptCourseAssets)
+    }
 }
 
 dependencies {
