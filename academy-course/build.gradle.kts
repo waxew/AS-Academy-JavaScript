@@ -13,6 +13,6 @@ android {
 }
 
 dependencies {
-    api(project(":academy-core-course"))
-    api(project(":academy-core-runtime"))
+    api(project(":course"))
+    api(project(":core"))
 }

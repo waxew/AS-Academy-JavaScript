@@ -22,12 +22,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    sourceSets.getByName("main").assets.srcDir("../course")
+    // Loader مرکزی مسیر course/javascript را انتظار دارد؛ ریشه assets باید پوشه والد course باشد.
+    sourceSets.getByName("main").assets.srcDir("..")
 }
 
 dependencies {
-    implementation(project(":academy-core-runtime"))
-    implementation(project(":academy-core-course"))
+    implementation(project(":core"))
+    implementation(project(":course"))
     implementation(project(":academy-course"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

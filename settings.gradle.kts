@@ -23,8 +23,8 @@ rootProject.name = "AS-Academy-JavaScript"
 include(":app")
 include(":academy-course")
 
-// ماژول‌های مرکزی بدون کپی سورس از submodule Core مصرف می‌شوند.
-include(":academy-core-course")
-project(":academy-core-course").projectDir = file("academy-core/course")
-include(":academy-core-runtime")
-project(":academy-core-runtime").projectDir = file("academy-core/core")
+// نام‌های ماژول عمداً همان نام داخلی Core هستند تا dependencyهای Core بدون تغییر کار کنند.
+include(":course")
+project(":course").projectDir = file("academy-core/course")
+include(":core")
+project(":core").projectDir = file("academy-core/core")

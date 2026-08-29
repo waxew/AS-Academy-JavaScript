@@ -1,29 +1,31 @@
 # استفاده JavaScript از AS Academy Core
 
-این پروژه اکنون `AS-Academy-Core` را به‌صورت Git submodule در مسیر `academy-core/` مصرف می‌کند. سورس مشترک در این ریپو کپی نشده است.
+این پروژه `AS-Academy-Core` را به‌صورت Git submodule در مسیر `academy-core/` مصرف می‌کند و کد مشترک در این ریپو کپی نمی‌شود.
 
 ## Core commit فعلی
-`1ed5ab777f7b55245e57c163d55903470d965763`
+`bdcf36eeb6cbcbea0844f3a4a0e1190ceb0e1ed1`
 
-## مواردی که مستقیماً از Core استفاده می‌شوند
-- `AcademyCourseApp` به‌عنوان App Shell
-- Navigation و Drawer
-- Home / Chapter / Lesson screens
+## اتصال Gradle
+در پروژه میزبان، ماژول‌های submodule با نام‌های استاندارد `:course` و `:core` map شده‌اند. این نام‌ها بخشی از قرارداد Build Core هستند و dependency داخلی `core -> course` را بدون fork یا کپی حفظ می‌کنند.
+
+## موارد مصرف‌شده از Core
+- AcademyCourseApp / App Shell
+- Navigation / Drawer
+- Home / Chapter / Lesson
 - LessonBlock renderer
-- Room database
-- Progress و Bookmark
-- Search/FTS
+- Room / Progress / Bookmark / Notes
+- Search FTS
 - Settings/DataStore
-- Course Package Loader/Validator
+- Course Loader/Validator
 - Quiz/Exercise/Project contracts
-- CodeRunner plugin API
+- CodeRunner API
 - Update/Backup contracts
-- Version Catalog و نسخه‌های Android/Kotlin/Compose
+- Version Catalog
 
 ## موارد اختصاصی این ریپو
 - `course/javascript/**`
 - JavaScript branding/config
 - JavaScript examples/exercises/quizzes/projects/glossary
-- JavaScript-specific CodeRunner در مرحله فعال‌سازی Runner
+- JavaScript Runner plugin
 
-قانون: هر قابلیت قابل استفاده در بیش از یک Course ابتدا در Core ساخته می‌شود؛ این ریپو فقط آن را فراخوانی می‌کند.
+قانون: هر قابلیت عمومی ابتدا در `AS-Academy-Core` ساخته و تست می‌شود و سپس Course repo فقط آن را مصرف می‌کند.
