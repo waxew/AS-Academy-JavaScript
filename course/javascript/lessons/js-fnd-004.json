@@ -1,5 +1,5 @@
 {
-  "id":"js-fnd-004","chapterId":"js-fnd-basics","title":"متغیرها: let، const و var","summary":"یادگیری ذخیره داده، نام‌گذاری و تفاوت سه روش تعریف متغیر.","order":1,"estimatedMinutes":18,
+  "id":"js-fnd-004","chapterId":"js-fnd-syntax","title":"متغیرها: let، const و var","summary":"یادگیری ذخیره داده، نام‌گذاری و تفاوت سه روش تعریف متغیر.","order":1,"estimatedMinutes":18,
   "blocks":[
     {"id":"js-fnd-004-b01","type":"PARAGRAPH","content":"متغیر یک نام برای نگهداری یک مقدار است. در JavaScript مدرن معمولاً از const برای مقداری که دوباره مقداردهی نمی‌شود و از let برای مقداری که تغییر می‌کند استفاده می‌کنیم."},
     {"id":"js-fnd-004-b02","type":"CODE","content":"const academy = 'AS Academy';\nlet lesson = 1;\nlesson = lesson + 1;\nconsole.log(academy, lesson);","metadata":{"language":"javascript"}},
