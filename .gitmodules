@@ -1,0 +1,3 @@
+[submodule "academy-core"]
+	path = academy-core
+	url = https://github.com/waxew/AS-Academy-Core.git

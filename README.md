@@ -1,53 +1,32 @@
 # AS Academy JavaScript
 
-اپلیکیشن آموزشی جامع JavaScript از مجموعه AS Academy.
+اپ آموزشی JavaScript از مجموعه AS Academy، از مبانی تا سطح تخصصی و پروژه‌محور.
 
 ## معماری
-این پروژه **هسته عمومی برنامه را دوباره پیاده‌سازی نمی‌کند**. اسکلت، معماری و قابلیت‌های مشترک از ریپوی مرکزی `AS-Academy-Core` تأمین می‌شوند. این ریپو فقط محتوای JavaScript، Branding و قابلیت‌های اختصاصی JavaScript را نگه می‌دارد.
+این پروژه Course Repository است. هسته Android از [`AS-Academy-Core`](https://github.com/waxew/AS-Academy-Core) به‌صورت Git submodule مصرف می‌شود و کدهای مشترک در این ریپو تکرار نمی‌شوند.
 
-## AS Academy Core Usage
-این پروژه از Core برای موارد زیر استفاده می‌کند:
-- App Shell و Navigation
-- Design System
-- Drawer و Profile
-- Database/Room architecture
-- Content Engine و Lesson Renderer
-- Progress Tracking
-- Quiz و Exercise Engine
-- Project Engine
-- Search و Bookmark
-- Glossary
+## Core مورد استفاده
+- App Shell / Compose UI
+- Navigation / Drawer
+- Room / Progress / Bookmark / Notes
+- Search FTS
 - Settings
-- Content/App Update architecture
-- Backup/Restore architecture
-- Code Runner Framework
+- Lesson Renderer
+- Course Loader + Validator
+- Quiz / Exercise / Project contracts
+- CodeRunner API
+- Update / Backup contracts
 
-## موارد اختصاصی این ریپو
-- JavaScript Course Package
-- درس‌ها و فصل‌های JavaScript
-- تمرین‌ها و آزمون‌ها
-- پروژه‌های JavaScript
-- واژه‌نامه JavaScript
-- Branding و Assetهای JavaScript
-- JavaScript Runner adapter/configuration
+جزئیات: `docs/CORE-USAGE.md`
 
-## قانون توسعه
-هر قابلیت عمومی که برای دوره‌های دیگر نیز قابل استفاده باشد باید در `AS-Academy-Core` اصلاح یا اضافه شود، نه با Copy/Paste در این ریپو.
+## محتوای اختصاصی JavaScript
+`course/javascript/` شامل Manifest، Levelها، Chapterها، Lessonها، Exerciseها، Quizها، Projectها و Glossary است.
 
-## مسیر محتوا
-```text
-course/javascript/
-├── manifest.json
-├── course.json
-├── levels.json
-├── chapters.json
-├── lessons/
-├── exercises/
-├── quizzes/
-├── projects/
-├── glossary/
-├── assets/
-└── branding/
+## Build
+```bash
+git clone --recurse-submodules https://github.com/waxew/AS-Academy-JavaScript.git
+cd AS-Academy-JavaScript
+gradle :app:assembleDebug
 ```
 
-وضعیت: آغاز پیاده‌سازی Course Package روی معماری مرکزی AS Academy Core.
+GitHub Actions نیز در هر Push پروژه را همراه با Core checkout و APK Debug را Build می‌کند.
