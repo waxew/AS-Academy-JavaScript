@@ -19,6 +19,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.4.1'
+      - name: Validate course package
+        run: python3 tools/validate_course.py
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload debug APK
