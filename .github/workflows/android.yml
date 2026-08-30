@@ -19,10 +19,33 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.4.1'
+
+      # Course Package قبل از Android build مستقل اعتبارسنجی می‌شود.
       - name: Validate course package
         run: python3 tools/validate_course.py
-      - name: Build debug APK
-        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Build debug and release APKs
+        run: gradle :app:assembleDebug :app:assembleRelease --stacktrace
+
+      # نام خروجی‌ها برای Release ثابت و قابل تشخیص نگه داشته می‌شود.
+      - name: Prepare release artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-artifacts
+          cp app/build/outputs/apk/debug/app-debug.apk release-artifacts/AS-Academy-JavaScript-v1.0.0-debug.apk
+          RELEASE_APK="$(find app/build/outputs/apk/release -maxdepth 1 -name '*.apk' | head -n 1)"
+          test -n "$RELEASE_APK"
+          cp "$RELEASE_APK" release-artifacts/AS-Academy-JavaScript-v1.0.0.apk
+          sha256sum release-artifacts/*.apk > release-artifacts/SHA256SUMS.txt
+          printf 'Version: 1.0.0\nVersionCode: 3\nApplicationId: com.asdevelopers.academy.javascript\nCourse validation: enabled\n' > release-artifacts/info.txt
+
+      - name: Upload release package
+        uses: actions/upload-artifact@v4
+        with:
+          name: AS-Academy-JavaScript-v1.0.0
+          path: release-artifacts/*
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
