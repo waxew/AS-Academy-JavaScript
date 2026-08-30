@@ -8,11 +8,12 @@ android {
     compileSdk = 37
 
     defaultConfig {
+        // applicationId ثابت می‌ماند تا نسخه Release روی نصب‌های قبلی قابل Update باشد.
         applicationId = "com.asdevelopers.academy.javascript"
         minSdk = 23
         targetSdk = 37
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "1.0.0"
     }
 
     buildFeatures { compose = true }
@@ -20,6 +21,40 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    // Signing فقط وقتی credentialهای Release توسط CI یا محیط محلی تزریق شده باشند ساخته می‌شود.
+    // هیچ کلید یا passwordای داخل repository ذخیره نمی‌شود.
+    val releaseStorePath = System.getenv("AS_ACADEMY_RELEASE_STORE_FILE")
+    val releaseStorePassword = System.getenv("AS_ACADEMY_RELEASE_STORE_PASSWORD")
+    val releaseKeyAlias = System.getenv("AS_ACADEMY_RELEASE_KEY_ALIAS")
+    val releaseKeyPassword = System.getenv("AS_ACADEMY_RELEASE_KEY_PASSWORD")
+
+    if (!releaseStorePath.isNullOrBlank() &&
+        !releaseStorePassword.isNullOrBlank() &&
+        !releaseKeyAlias.isNullOrBlank() &&
+        !releaseKeyPassword.isNullOrBlank()
+    ) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(releaseStorePath)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+                enableV4Signing = true
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            // Minification فعلاً خاموش است تا اولین Release کم‌ریسک و قابل عیب‌یابی باشد.
+            isMinifyEnabled = false
+            signingConfigs.findByName("release")?.let { signingConfig = it }
+        }
     }
 
     // فقط Course Package آموزشی وارد APK می‌شود؛ ریشه پروژه و خروجی Gradle هرگز asset نیستند.
