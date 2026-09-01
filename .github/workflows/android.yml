@@ -20,14 +20,26 @@ jobs:
         with:
           gradle-version: '9.4.1'
 
-      # Course Package قبل از Android build مستقل اعتبارسنجی می‌شود.
-      - name: Validate course package
-        run: python3 tools/validate_course.py
+      # MainCourse منبع قطعی محتواست؛ CI نباید اجازه fallback محلی بدهد.
+      - name: Validate MainCourse package
+        run: |
+          test -f academy-main-course/courses/javascript/course/manifest.json
+          python3 tools/validate_course.py --root academy-main-course/courses/javascript/course
 
       - name: Build debug and release APKs
         run: gradle :app:assembleDebug :app:assembleRelease --stacktrace
 
-      # نام خروجی‌ها برای Release ثابت و قابل تشخیص نگه داشته می‌شود.
+      # ثابت می‌کند همان package منتقل‌شده از MainCourse واقعاً وارد assets اپ شده است.
+      - name: Verify packaged MainCourse content
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f app/src/main/assets/course/javascript/manifest.json
+          test -f app/src/main/assets/course/javascript/lessons/js-spc-018.json
+          cmp academy-main-course/courses/javascript/course/manifest.json app/src/main/assets/course/javascript/manifest.json
+          cmp academy-main-course/courses/javascript/course/lessons/js-spc-018.json app/src/main/assets/course/javascript/lessons/js-spc-018.json
+          python3 tools/validate_course.py --root app/src/main/assets/course/javascript
+
       - name: Prepare release artifacts
         shell: bash
         run: |
@@ -38,7 +50,7 @@ jobs:
           test -n "$RELEASE_APK"
           cp "$RELEASE_APK" release-artifacts/AS-Academy-JavaScript-v1.0.0.apk
           sha256sum release-artifacts/*.apk > release-artifacts/SHA256SUMS.txt
-          printf 'Version: 1.0.0\nVersionCode: 3\nApplicationId: com.asdevelopers.academy.javascript\nCourse validation: enabled\n' > release-artifacts/info.txt
+          printf 'Version: 1.0.0\nVersionCode: 3\nApplicationId: com.asdevelopers.academy.javascript\nCourse source: AS-Academy-MainCourse\nCourse validation: enabled\n' > release-artifacts/info.txt
 
       - name: Upload release package
         uses: actions/upload-artifact@v4
