@@ -68,8 +68,13 @@ val syncJavaScriptCourseAssets by tasks.registering(Copy::class) {
     into(layout.projectDirectory.dir("src/main/assets/course/javascript"))
 }
 
+// هر Task اندروید که Assets یا مدل Lint را می‌خواند باید صریحاً بعد از Sync اجرا شود.
+// این وابستگی برای Gradle 9 لازم است و از implicit dependency در Release جلوگیری می‌کند.
 tasks.configureEach {
-    if (name.startsWith("merge") && name.endsWith("Assets")) {
+    val readsCourseAssets =
+        (name.startsWith("merge") && name.endsWith("Assets")) ||
+        name.contains("Lint", ignoreCase = true)
+    if (readsCourseAssets) {
         dependsOn(syncJavaScriptCourseAssets)
     }
 }
