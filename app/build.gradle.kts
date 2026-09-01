@@ -59,18 +59,15 @@ android {
     sourceSets.getByName("main").assets.srcDir("src/main/assets")
 }
 
-// MainCourse از این نسخه منبع اصلی تمام محتوای آموزشی JavaScript است.
-// fallback محلی فقط برای checkoutهای قدیمی یا cloneهایی که submodule جدید را هنوز initialize نکرده‌اند باقی می‌ماند.
+// MainCourse تنها منبع محتوای آموزشی JavaScript است.
+// اگر submodule مقداردهی نشده باشد یا Course Package ناقص باشد، Build عمداً متوقف می‌شود.
 val mainCourseJavaScript = rootProject.file("academy-main-course/courses/javascript/course")
-val legacyLocalJavaScript = rootProject.file("course/javascript")
-val javaScriptCourseSource = if (mainCourseJavaScript.resolve("manifest.json").isFile) {
-    mainCourseJavaScript
-} else {
-    legacyLocalJavaScript
+require(mainCourseJavaScript.resolve("manifest.json").isFile) {
+    "MainCourse JavaScript package is missing. Run: git submodule update --init --recursive"
 }
 
 val syncJavaScriptCourseAssets by tasks.registering(Copy::class) {
-    from(javaScriptCourseSource)
+    from(mainCourseJavaScript)
     into(layout.projectDirectory.dir("src/main/assets/course/javascript"))
 }
 
