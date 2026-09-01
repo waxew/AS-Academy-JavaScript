@@ -51,25 +51,29 @@ android {
 
     buildTypes {
         getByName("release") {
-            // Minification فعلاً خاموش است تا اولین Release کم‌ریسک و قابل عیب‌یابی باشد.
             isMinifyEnabled = false
             signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
 
-    // فقط Course Package آموزشی وارد APK می‌شود؛ ریشه پروژه و خروجی Gradle هرگز asset نیستند.
     sourceSets.getByName("main").assets.srcDir("src/main/assets")
 }
 
-// Course Package مستقل از کد اپ نگهداری می‌شود. قبل از Build فقط محتوای course/javascript
-// به ساختار استاندارد assets/course/javascript کپی می‌شود تا Loader مشترک Core آن را بخواند.
+// MainCourse از این نسخه منبع اصلی تمام محتوای آموزشی JavaScript است.
+// fallback محلی فقط برای checkoutهای قدیمی یا cloneهایی که submodule جدید را هنوز initialize نکرده‌اند باقی می‌ماند.
+val mainCourseJavaScript = rootProject.file("academy-main-course/courses/javascript/course")
+val legacyLocalJavaScript = rootProject.file("course/javascript")
+val javaScriptCourseSource = if (mainCourseJavaScript.resolve("manifest.json").isFile) {
+    mainCourseJavaScript
+} else {
+    legacyLocalJavaScript
+}
+
 val syncJavaScriptCourseAssets by tasks.registering(Copy::class) {
-    from(rootProject.file("course/javascript"))
+    from(javaScriptCourseSource)
     into(layout.projectDirectory.dir("src/main/assets/course/javascript"))
 }
 
-// هر Task اندروید که Assets یا مدل Lint را می‌خواند باید صریحاً بعد از Sync اجرا شود.
-// این وابستگی برای Gradle 9 لازم است و از implicit dependency در Release جلوگیری می‌کند.
 tasks.configureEach {
     val readsCourseAssets =
         (name.startsWith("merge") && name.endsWith("Assets")) ||
